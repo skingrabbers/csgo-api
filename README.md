@@ -35,6 +35,10 @@ The map lives in `build_names.mjs` and nowhere else. The build fails if a folder
 
 Runs every 6 hours. To run now: Actions, then "Generate locale names", then "Run workflow" (or `gh workflow run generate.yml`).
 
+## Security
+
+The workflow runs third-party code (the upstream generator and its npm dependencies), so it is split in two jobs. `build` has read-only permissions, checks out without persisting credentials, installs with `npm ci --ignore-scripts`, runs the generator and uploads `out/` as an artifact. `publish` is the only job with `contents: write`; it downloads the artifact and runs no upstream code and no npm install. All actions are pinned to full commit SHAs.
+
 ## Credit and license
 
 Names come from [ByMykel/CSGO-API](https://github.com/ByMykel/CSGO-API) (MIT, Copyright (c) 2023 ByMykel), which is checked out and run unmodified by the workflow. Its license text is reproduced in [LICENSE](LICENSE). Underlying data derives from Valve's game files; Counter-Strike is a trademark of Valve Corporation.
